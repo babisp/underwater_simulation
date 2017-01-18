@@ -21,4 +21,11 @@
   </description>
   </class>
 
+  <class name="TestSensor_Factory" type="TestSensor_Factory"
+    base_class_type="uwsim::SimulatedDeviceFactory">
+  <description>
+  Test Sensor
+  </description>
+  </class>
+
 </library>
