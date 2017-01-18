@@ -12,7 +12,7 @@ std::vector<boost::shared_ptr<ROSInterface> > TestSensor_Factory::getInterface(R
 
 #if ROS_VERSION_MINIMUM(1, 9, 0)
 // new pluginlib API in Groovy and Hydro
-PLUGINLIB_EXPORT_CLASS(FACTORYCLASSNAME_Factory, uwsim::SimulatedDeviceFactory)
+PLUGINLIB_EXPORT_CLASS(TestSensor_Factory, uwsim::SimulatedDeviceFactory)
 #else
-PLUGINLIB_REGISTER_CLASS(FACTORYCLASSNAME_Factory, FACTORYCLASSNAME_Factory, uwsim::SimulatedDeviceFactory)
+PLUGINLIB_REGISTER_CLASS(TestSensor_Factory, TestSensor_Factory, uwsim::SimulatedDeviceFactory)
 #endif
