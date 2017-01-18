@@ -37,6 +37,7 @@
 <!ELEMENT p (#PCDATA)>
 <!ELEMENT std (#PCDATA)>
 <!ELEMENT target (#PCDATA)>
+<!ELEMENT frequency (#PCDATA)>
 
 
 <!-- elementos oceanState -->
