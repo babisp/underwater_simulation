@@ -7,14 +7,6 @@
 #include <std_msgs/Int32.h>
 using namespace uwsim;
 
-class TestSensor : public SimulatedDevice
-{
-public:
-  int frequency;
-
-  TestSensor(TestSensor_Config * cfg);
-};
-
 class TestSensor_Config : public SimulatedDeviceConfig
 {
 public:
@@ -40,6 +32,14 @@ public:
   bool applyConfig(SimulatedIAUV * auv, Vehicle &vehicleChars, SceneBuilder *sceneBuilder, size_t iteration);
   std::vector<boost::shared_ptr<ROSInterface> > getInterface(ROSInterfaceInfo & rosInterface,
     std::vector<boost::shared_ptr<SimulatedIAUV> > & iauvFile);
+};
+
+class TestSensor : public SimulatedDevice
+{
+public:
+  int frequency;
+
+  TestSensor(TestSensor_Config * cfg);
 };
 
 class TestSensor_ROSPublisher : public ROSPublisherInterface
