@@ -2,9 +2,21 @@
 #define TESTSENSOR_ECHO_H_
 #include "SimulatedDevice.h"
 #include <ros/ros.h>
+#include "ConfigXMLParser.h"
 using namespace uwsim;
 
-/* You will need to add your code HERE */
+class TestSensor_Config : public SimulatedDeviceConfig
+{
+public:
+  //XML members
+  int frequency;
+  //constructor
+  TestSensor_Config(std::string type_) :
+      SimulatedDeviceConfig(type_)
+  {
+  }
+};
+
 class TestSensor_Factory : public SimulatedDeviceFactory
 {
 public:

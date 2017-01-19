@@ -1,9 +1,25 @@
 #include <pluginlib/class_list_macros.h>
 #include <uwsim/TestSensor.h>
 
-/* You will need to add your code HERE */
+SimulatedDeviceConfig::Ptr TestSensor_Factory::processConfig(const xmlpp::Node* node, ConfigFile * config)
+{
+	TestSensor_Config * cfg = new TestSensor_Config(getType());
+	xmlpp::Node::NodeList list = node->get_children();
+	for (xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		const xmlpp::Node* child = dynamic_cast<const xmlpp::Node*>(*iter);
+	    // if (child->get_name() == "relativeTo")
+	    //   config->extractStringChar(child, cfg->relativeTo);
+	    // else if (child->get_name() == "position")
+	    //   config->extractPositionOrColor(child, cfg->position);
+	    // else if (child->get_name() == "orientation")
+	    //   config->extractOrientation(child, cfg->orientation);
+		if (child->get_name() == "frequency")
+			config->extractIntChar(child, cfg->frequency);
+	}
 
-SimulatedDeviceConfig::Ptr TestSensor_Factory::processConfig(const xmlpp::Node* node, ConfigFile * config){}
+	return SimulatedDeviceConfig::Ptr(cfg);
+}
 
 bool TestSensor_Factory::applyConfig(SimulatedIAUV * auv, Vehicle &vehicleChars, SceneBuilder *sceneBuilder, size_t iteration){}
 
