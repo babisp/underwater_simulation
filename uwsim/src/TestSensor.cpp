@@ -1,6 +1,12 @@
 #include <pluginlib/class_list_macros.h>
 #include <uwsim/TestSensor.h>
 
+TestSensor::TestSensor(TestSensor_Config * cfg) :
+	SimulatedDevice(cfg)
+{
+	this->frequency = cfg->frequency;
+}
+
 SimulatedDeviceConfig::Ptr TestSensor_Factory::processConfig(const xmlpp::Node* node, ConfigFile * config)
 {
 	TestSensor_Config * cfg = new TestSensor_Config(getType());
