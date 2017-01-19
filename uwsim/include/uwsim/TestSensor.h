@@ -3,6 +3,8 @@
 #include "SimulatedDevice.h"
 #include <ros/ros.h>
 #include "ConfigXMLParser.h"
+#include "ROSInterface.h"
+#include <std_msgs/Int32.h>
 using namespace uwsim;
 
 class TestSensor : public SimulatedDevice
@@ -32,13 +34,29 @@ public:
   TestSensor_Factory(std::string type_ = "TestSensor") :
   SimulatedDeviceFactory(type_)
   {
-  }
-  ;
+  };
 
   SimulatedDeviceConfig::Ptr processConfig(const xmlpp::Node* node, ConfigFile * config);
   bool applyConfig(SimulatedIAUV * auv, Vehicle &vehicleChars, SceneBuilder *sceneBuilder, size_t iteration);
   std::vector<boost::shared_ptr<ROSInterface> > getInterface(ROSInterfaceInfo & rosInterface,
     std::vector<boost::shared_ptr<SimulatedIAUV> > & iauvFile);
+};
+
+class TestSensor_ROSPublisher : public ROSPublisherInterface
+{
+  TestSensor * dev;
+public:
+  TestSensor_ROSPublisher(TestSensor *dev, std::string topic, int rate) :
+      ROSPublisherInterface(topic, rate), dev(dev)
+  {
+  }
+
+  void createPublisher(ros::NodeHandle &nh);
+  void publish();
+
+  ~TestSensor_ROSPublisher()
+  {
+  }
 };
 
 #endif

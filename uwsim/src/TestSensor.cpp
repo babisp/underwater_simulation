@@ -48,7 +48,39 @@ bool TestSensor_Factory::applyConfig(SimulatedIAUV * auv, Vehicle &vehicleChars,
 	return true;
 }
 
-std::vector<boost::shared_ptr<ROSInterface> > TestSensor_Factory::getInterface(ROSInterfaceInfo & rosInterface, std::vector<boost::shared_ptr<SimulatedIAUV> > & iauvFile){}
+std::vector<boost::shared_ptr<ROSInterface> > TestSensor_Factory::getInterface(ROSInterfaceInfo & rosInterface, std::vector<boost::shared_ptr<SimulatedIAUV> > & iauvFile)
+{
+	std::vector < boost::shared_ptr<ROSInterface> > ifaces;
+	for (size_t i = 0; i < iauvFile.size(); ++i)
+	{
+		for (size_t d = 0; d < iauvFile[i]->devices->all.size(); ++d)
+		{
+			if (iauvFile[i]->devices->all[d]->getType() == this->getType()
+				&& iauvFile[i]->devices->all[d]->name == rosInterface.targetName)
+			{
+				ifaces.push_back(
+					boost::shared_ptr<ROSInterface>(new TestSensor_ROSPublisher(dynamic_cast<TestSensor*>(iauvFile[i]->devices->all[d].get()),
+						rosInterface.topic, rosInterface.rate)));
+			}
+		}
+	}
+	if (ifaces.size() == 0)
+		ROS_WARN("Returning empty ROS interface for device %s...", rosInterface.targetName.c_str());
+	return ifaces;
+}
+
+void TestSensor_ROSPublisher::createPublisher(ros::NodeHandle &nh)
+{
+	ROS_INFO("TestSensor_ROSPublisher on topic %s", topic.c_str());
+	pub_ = nh.advertise < std_msgs::Int32 > (topic, 1);
+}
+
+void TestSensor_ROSPublisher::publish()
+{
+	std_msgs::Int32 msg;
+	msg.data = dev->frequency;
+	pub_.publish(msg);
+}
 
 #if ROS_VERSION_MINIMUM(1, 9, 0)
 // new pluginlib API in Groovy and Hydro
