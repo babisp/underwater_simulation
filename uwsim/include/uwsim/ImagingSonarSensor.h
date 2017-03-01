@@ -1,10 +1,21 @@
 #ifndef IMAGING_SONAR_SENSOR_ECHO_H_
 #define IMAGING_SONAR_SENSOR_ECHO_H_
 #include "SimulatedDevice.h"
+#include "ConfigXMLParser.h"
 #include <ros/ros.h>
 using namespace uwsim;
 
-/* You will need to add your code HERE */
+class ImagingSonarSensor_Config : public SimulatedDeviceConfig {
+public:
+  //XML members
+  std::string relativeTo;
+  double position[3], orientation[3], initAngleX, finalAngleX, initAngleY, finalAngleY, angleIncr, range;
+  //constructor
+  ImagingSonarSensor_Config(std::string type_) :
+    SimulatedDeviceConfig(type_) {
+  }
+};
+
 class ImagingSonarSensor_Factory : public SimulatedDeviceFactory {
 public:
   //this is the only place the device/interface type is set
