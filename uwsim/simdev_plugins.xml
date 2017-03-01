@@ -1,30 +1,30 @@
 <library path="lib/libuwsim_plugins_simdev">
 
-  <class name="SimDev_Echo_Factory" type="SimDev_Echo_Factory" 
+  <class name="SimDev_Echo_Factory" type="SimDev_Echo_Factory"
     base_class_type="uwsim::SimulatedDeviceFactory">
   <description>
   Example plugin
   </description>
   </class>
 
-  <class name="ForceSensor_Factory" type="ForceSensor_Factory" 
+  <class name="ForceSensor_Factory" type="ForceSensor_Factory"
     base_class_type="uwsim::SimulatedDeviceFactory">
   <description>
   Force Sensor
   </description>
   </class>
 
-  <class name="DredgeTool_Factory" type="DredgeTool_Factory" 
+  <class name="DredgeTool_Factory" type="DredgeTool_Factory"
     base_class_type="uwsim::SimulatedDeviceFactory">
   <description>
   Drege Tool
   </description>
   </class>
 
-  <class name="TestSensor_Factory" type="TestSensor_Factory"
+  <class name="ImagingSonarSensor_Factory" type="ImagingSonarSensor_Factory"
     base_class_type="uwsim::SimulatedDeviceFactory">
   <description>
-  Test Sensor
+  Imaging Sonar Sensor
   </description>
   </class>
 

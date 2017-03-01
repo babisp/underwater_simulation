@@ -81,7 +81,7 @@ link_directories(${orocos_kdl_LIBRARY_DIRS})
 # this disables the warnings that come mostly from osg
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-ignored-qualifiers")
 
-add_library(uwsim 
+add_library(uwsim
 src/osgOceanScene.cpp
 src/SkyDome.cpp
 src/SphereSegment.cpp
@@ -97,7 +97,7 @@ src/ROSInterface.cpp
 src/ObjectPicker.cpp
 src/SceneBuilder.cpp
 src/ViewBuilder.cpp
-src/SimulatedDevices.cpp 
+src/SimulatedDevices.cpp
 src/InertialMeasurementUnit.cpp
 src/PressureSensor.cpp
 src/DVLSensor.cpp
@@ -109,11 +109,11 @@ src/PhysicsBuilder.cpp
 src/ROSSceneBuilder.cpp
 )
 
-add_library(uwsim_plugins_simdev 
+add_library(uwsim_plugins_simdev
 src/SimDev_Echo.cpp
 src/ForceSensor.cpp
 src/DredgeTool.cpp
-src/TestSensor.cpp
+src/ImagingSonarSensor.cpp
 )
 target_link_libraries(uwsim_plugins_simdev ${catkin_LIBRARIES} ${OPENSCENEGRAPH_LIBRARIES})
 
@@ -213,7 +213,7 @@ install(DIRECTORY data/scenes data/shaders
 
 install(DIRECTORY src/
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-   FILES_MATCHING PATTERN "uwsim" 
+   FILES_MATCHING PATTERN "uwsim"
    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
                GROUP_READ GROUP_EXECUTE
                WORLD_READ WORLD_EXECUTE
