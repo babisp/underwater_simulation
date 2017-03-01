@@ -17,7 +17,7 @@
 <!ELEMENT multibeamSensor (name,relativeTo,visible?,position?,orientation?, initAngle,finalAngle, angleIncr,range)>
 <!ELEMENT camera (freeMotion?,objectToTrack?,fov?,aspectRatio?,near?,far?,position?,lookAt?) >
 <!ELEMENT object (name,file,position,orientation,scaleFactor?,offsetp?,offsetr?,physics?)>
-<!ELEMENT rosInterfaces ((ROSOdomToPAT*)?, (PATToROSOdom*)?, (WorldToROSTF*)?, (ArmToROSJointState*)?, (ROSJointStateToArm*)?, (VirtualCameraToROSImage*)?, (ROSImageToHUD*)?,(ROSTwistToPAT*)?, (RangeSensorToROSRange*)?, (ROSPoseToPAT*)?, (ImuToROSImu*)?, (PressureSensorToROS*)?, (GPSSensorToROS*)?, (DVLSensorToROS*)?, (RangeImageSensorToROSImage*)?,(multibeamSensorToLaserScan*)?, (SimulatedDeviceROS*)?,(contactSensorToROS*)?,(echoROS*)?,(ForceSensorROS*)?,(ImagingSonarSensorToMultiEchoLaserScan*)?,(ROSPointCloudLoader*)?,(RangeCameraToPCL*)?) >
+<!ELEMENT rosInterfaces ((ROSOdomToPAT*)?, (PATToROSOdom*)?, (WorldToROSTF*)?, (ArmToROSJointState*)?, (ROSJointStateToArm*)?, (VirtualCameraToROSImage*)?, (ROSImageToHUD*)?,(ROSTwistToPAT*)?, (RangeSensorToROSRange*)?, (ROSPoseToPAT*)?, (ImuToROSImu*)?, (PressureSensorToROS*)?, (GPSSensorToROS*)?, (DVLSensorToROS*)?, (RangeImageSensorToROSImage*)?,(multibeamSensorToLaserScan*)?, (SimulatedDeviceROS*)?,(contactSensorToROS*)?,(echoROS*)?,(ForceSensorROS*)?,(ImagingSonarSensorROS*)?,(ROSPointCloudLoader*)?,(RangeCameraToPCL*)?) >
 
 <!-- elementos comunes -->
 <!ELEMENT position (x,y,z)>
@@ -198,4 +198,4 @@ echoROS?
 <!ELEMENT DredgeTool (name, target, offsetp, offsetr)>
 
 <!ELEMENT ImagingSonarSensor (name,relativeTo,position?,orientation?, initAngleX,finalAngleX,initAngleY,finalAngleY,angleIncr,range)>
-<!ELEMENT ImagingSonarSensorToMultiEchoLaserScan (name, topic, rate?)>
+<!ELEMENT ImagingSonarSensorROS (name, topic, rate?)>
