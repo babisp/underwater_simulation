@@ -28,8 +28,8 @@ public:
 
   SimulatedDeviceConfig::Ptr processConfig(const xmlpp::Node* node, ConfigFile * config);
   bool applyConfig(SimulatedIAUV * auv, Vehicle &vehicleChars, SceneBuilder *sceneBuilder, size_t iteration);
-  std::vector<boost::shared_ptr<ROSInterface>> getInterface(ROSInterfaceInfo & rosInterface,
-      std::vector<boost::shared_ptr<SimulatedIAUV>> & iauvFile);
+  std::vector<boost::shared_ptr<ROSInterface> > getInterface(ROSInterfaceInfo & rosInterface,
+      std::vector<boost::shared_ptr<SimulatedIAUV> > & iauvFile);
 };
 
 class ImagingSonarSensor : public SimulatedDevice {
