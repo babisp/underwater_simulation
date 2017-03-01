@@ -67,22 +67,22 @@ std::vector<boost::shared_ptr<ROSInterface> > ImagingSonarSensor_Factory::getInt
 
 }
 
-ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg) :
-  SimulatedDevice(cfg) {
-  this->relativeTo = cfg->relativeTo;
-  this->position[0] = cfg->position[0];
-  this->position[1] = cfg->position[1];
-  this->position[2] = cfg->position[2];
-  this->orientation[0] = cfg->orientation[0];
-  this->orientation[1] = cfg->orientation[1];
-  this->orientation[2] = cfg->orientation[2];
-  this->initAngleX = cfg->initAngleX;
-  this->finalAngleX = cfg->finalAngleX;
-  this->initAngleY = cfg->initAngleY;
-  this->finalAngleY = cfg->finalAngleY;
-  this->angleIncr = cfg->angleIncr;
-  this->range = cfg->range;
-}
+// ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg) :
+//   SimulatedDevice(cfg) {
+//   this->relativeTo = cfg->relativeTo;
+//   this->position[0] = cfg->position[0];
+//   this->position[1] = cfg->position[1];
+//   this->position[2] = cfg->position[2];
+//   this->orientation[0] = cfg->orientation[0];
+//   this->orientation[1] = cfg->orientation[1];
+//   this->orientation[2] = cfg->orientation[2];
+//   this->initAngleX = cfg->initAngleX;
+//   this->finalAngleX = cfg->finalAngleX;
+//   this->initAngleY = cfg->initAngleY;
+//   this->finalAngleY = cfg->finalAngleY;
+//   this->angleIncr = cfg->angleIncr;
+//   this->range = cfg->range;
+// }
 
 ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Node *trackNode) :
   SimulatedDevice(cfg) {
@@ -97,7 +97,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 
 #if ROS_VERSION_MINIMUM(1, 9, 0)
 // new pluginlib API in Groovy and Hydro
-PLUGINLIB_EXPORT_CLASS(FACTORYCLASSNAME_Factory, uwsim::SimulatedDeviceFactory)
+PLUGINLIB_EXPORT_CLASS(ImagingSonarSensor_Factory, uwsim::SimulatedDeviceFactory)
 #else
-PLUGINLIB_REGISTER_CLASS(FACTORYCLASSNAME_Factory, FACTORYCLASSNAME_Factory, uwsim::SimulatedDeviceFactory)
+PLUGINLIB_REGISTER_CLASS(ImagingSonarSensor_Factory, ImagingSonarSensor_Factory, uwsim::SimulatedDeviceFactory)
 #endif
