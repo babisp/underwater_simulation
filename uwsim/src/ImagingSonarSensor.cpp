@@ -14,17 +14,17 @@ SimulatedDeviceConfig::Ptr ImagingSonarSensor_Factory::processConfig(const xmlpp
       config->extractPositionOrColor(child, cfg->position);
     else if (child->get_name() == "orientation")
       config->extractOrientation(child, cfg->orientation);
-    else if (child->getName() == "initAngleX")
+    else if (child->get_name() == "initAngleX")
       config->extractFloatChar(child, cfg->initAngleX);
-    else if (child->getName() == "finalAngleX")
+    else if (child->get_name() == "finalAngleX")
       config->extractFloatChar(child, cfg->finalAngleX);
-    else if (child->getName() == "initAngleY")
+    else if (child->get_name() == "initAngleY")
       config->extractFloatChar(child, cfg->initAngleY);
-    else if (child->getName() == "finalAngleY")
+    else if (child->get_name() == "finalAngleY")
       config->extractFloatChar(child, cfg->finalAngleY);
-    else if (child->getName() == "angleIncr")
+    else if (child->get_name() == "angleIncr")
       config->extractFloatChar(child, cfg->angleIncr);
-    else if (child->getName() == "range")
+    else if (child->get_name() == "range")
       config->extractFloatChar(child, cfg->range);
   }
 
