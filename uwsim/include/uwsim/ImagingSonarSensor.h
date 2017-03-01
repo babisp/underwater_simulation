@@ -10,7 +10,8 @@ using namespace uwsim;
 class ImagingSonarSensor_Config : public SimulatedDeviceConfig {
 public:
   //XML members
-  int frequency;
+  std::string relativeTo;
+  double position[3], orientation[3], initAngleX, finalAngleX, initAngleY, finalAngleY, angleIncr, range;
   //constructor
   ImagingSonarSensor_Config(std::string type_) :
     SimulatedDeviceConfig(type_) {
@@ -32,7 +33,8 @@ public:
 
 class ImagingSonarSensor : public SimulatedDevice {
 public:
-  int frequency;
+  std::string relativeTo;
+  double position[3], orientation[3], initAngleX, finalAngleX, initAngleY, finalAngleY, angleIncr, range;
 
   ImagingSonarSensor(ImagingSonarSensor_Config * cfg);
 };

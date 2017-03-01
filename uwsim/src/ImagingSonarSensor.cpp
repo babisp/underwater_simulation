@@ -11,14 +11,24 @@ SimulatedDeviceConfig::Ptr ImagingSonarSensor_Factory::processConfig(const xmlpp
 	xmlpp::Node::NodeList list = node->get_children();
 	for (xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter) {
 		const xmlpp::Node* child = dynamic_cast<const xmlpp::Node*>(*iter);
-		// if (child->get_name() == "relativeTo")
-		//   config->extractStringChar(child, cfg->relativeTo);
-		// else if (child->get_name() == "position")
-		//   config->extractPositionOrColor(child, cfg->position);
-		// else if (child->get_name() == "orientation")
-		//   config->extractOrientation(child, cfg->orientation);
-		if (child->get_name() == "frequency")
-			config->extractIntChar(child, cfg->frequency);
+		if (child->get_name() == "relativeTo")
+			config->extractStringChar(child, cfg->relativeTo);
+		else if (child->get_name() == "position")
+			config->extractPositionOrColor(child, cfg->position);
+		else if (child->get_name() == "orientation")
+			config->extractOrientation(child, cfg->orientation);
+		else if (child->get_name() == "initAngleX")
+			config->extractFloatChar(child, cfg->initAngleX);
+		else if (child->get_name() == "finalAngleX")
+			config->extractFloatChar(child, cfg->finalAngleX);
+		else if (child->get_name() == "initAngleY")
+			config->extractFloatChar(child, cfg->initAngleY);
+		else if (child->get_name() == "finalAngleY")
+			config->extractFloatChar(child, cfg->finalAngleY);
+		else if (child->get_name() == "angleIncr")
+			config->extractFloatChar(child, cfg->angleIncr);
+		else if (child->get_name() == "range")
+			config->extractFloatChar(child, cfg->range);
 	}
 
 	return SimulatedDeviceConfig::Ptr(cfg);
@@ -64,7 +74,7 @@ void ImagingSonarSensor_ROSPublisher::createPublisher(ros::NodeHandle &nh) {
 
 void ImagingSonarSensor_ROSPublisher::publish() {
 	std_msgs::Int32 msg;
-	msg.data = dev->frequency;
+	msg.data = 5;
 	pub_.publish(msg);
 }
 
