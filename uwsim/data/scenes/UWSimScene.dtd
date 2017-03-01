@@ -17,7 +17,7 @@
 <!ELEMENT multibeamSensor (name,relativeTo,visible?,position?,orientation?, initAngle,finalAngle, angleIncr,range)>
 <!ELEMENT camera (freeMotion?,objectToTrack?,fov?,aspectRatio?,near?,far?,position?,lookAt?) >
 <!ELEMENT object (name,file,position,orientation,scaleFactor?,offsetp?,offsetr?,physics?)>
-<!ELEMENT rosInterfaces ((ROSOdomToPAT*)?, (PATToROSOdom*)?, (WorldToROSTF*)?, (ArmToROSJointState*)?, (ROSJointStateToArm*)?, (VirtualCameraToROSImage*)?, (ROSImageToHUD*)?,(ROSTwistToPAT*)?, (RangeSensorToROSRange*)?, (ROSPoseToPAT*)?, (ImuToROSImu*)?, (PressureSensorToROS*)?, (GPSSensorToROS*)?, (DVLSensorToROS*)?, (RangeImageSensorToROSImage*)?,(multibeamSensorToLaserScan*)?, (SimulatedDeviceROS*)?,(contactSensorToROS*)?,(echoROS*)?,(ForceSensorROS*)?,(ImagingSonarSensorROS*)?,(ROSPointCloudLoader*)?,(RangeCameraToPCL*)?) >
+<!ELEMENT rosInterfaces ((ROSOdomToPAT*)?, (PATToROSOdom*)?, (WorldToROSTF*)?, (ArmToROSJointState*)?, (ROSJointStateToArm*)?, (VirtualCameraToROSImage*)?, (ROSImageToHUD*)?,(ROSTwistToPAT*)?, (RangeSensorToROSRange*)?, (ROSPoseToPAT*)?, (ImuToROSImu*)?, (PressureSensorToROS*)?, (GPSSensorToROS*)?, (DVLSensorToROS*)?, (RangeImageSensorToROSImage*)?,(multibeamSensorToLaserScan*)?, (SimulatedDeviceROS*)?,(contactSensorToROS*)?,(echoROS*)?,(ForceSensorROS*)?,(ImagingSonarSensorToMultiEchoLaserScan*)?,(ROSPointCloudLoader*)?,(RangeCameraToPCL*)?) >
 
 <!-- elementos comunes -->
 <!ELEMENT position (x,y,z)>
@@ -37,8 +37,6 @@
 <!ELEMENT p (#PCDATA)>
 <!ELEMENT std (#PCDATA)>
 <!ELEMENT target (#PCDATA)>
-<!ELEMENT frequency (#PCDATA)>
-
 
 <!-- elementos oceanState -->
 <!ELEMENT windx (#PCDATA)>
@@ -111,6 +109,13 @@
 <!ELEMENT initAngle (#PCDATA)>
 <!ELEMENT finalAngle (#PCDATA)>
 <!ELEMENT angleIncr (#PCDATA)>
+
+<!--elementos imagingSonarSensor -->
+<!ATTLIST ImagingSonarSensor underwaterParticles (true|false) #IMPLIED>
+<!ELEMENT initAngleX (#PCDATA)>
+<!ELEMENT finalAngleX (#PCDATA)>
+<!ELEMENT initAngleY (#PCDATA)>
+<!ELEMENT finalAngleY (#PCDATA)>
 
 <!-- elementos vehicle -->
 <!ELEMENT name (#PCDATA)>
@@ -192,5 +197,5 @@ echoROS?
 
 <!ELEMENT DredgeTool (name, target, offsetp, offsetr)>
 
-<!ELEMENT ImagingSonarSensor (name, frequency)>
-<!ELEMENT ImagingSonarSensorROS (name, topic, rate?)>
+<!ELEMENT ImagingSonarSensor (name,relativeTo,position?,orientation?, initAngleX,finalAngleX,initAngleY,finalAngleY,angleIncr,range)>
+<!ELEMENT ImagingSonarSensorToMultiEchoLaserScan (name, topic, rate?)>
