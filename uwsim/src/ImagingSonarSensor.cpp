@@ -3,7 +3,19 @@
 
 ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg) :
 	SimulatedDevice(cfg) {
-	this->frequency = cfg->frequency;
+	this->relativeTo = cfg->relativeTo;
+	this->position[0] = cfg->position[0];
+	this->position[1] = cfg->position[1];
+	this->position[2] = cfg->position[2];
+	this->orientation[0] = cfg->orientation[0];
+	this->orientation[1] = cfg->orientation[1];
+	this->orientation[2] = cfg->orientation[2];
+	this->initAngleX = cfg->initAngleX;
+	this->finalAngleX = cfg->finalAngleX;
+	this->initAngleY = cfg->initAngleY;
+	this->finalAngleY = cfg->finalAngleY;
+	this->angleIncr = cfg->angleIncr;
+	this->range = cfg->range;
 }
 
 SimulatedDeviceConfig::Ptr ImagingSonarSensor_Factory::processConfig(const xmlpp::Node* node, ConfigFile * config) {
