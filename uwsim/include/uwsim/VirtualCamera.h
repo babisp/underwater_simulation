@@ -1,10 +1,10 @@
-/* 
+/*
  * Copyright (c) 2013 University of Jaume-I.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/gpl.html
- * 
+ *
  * Contributors:
  *     Mario Prats
  *     Javier Perez
@@ -179,16 +179,18 @@ public:
   osg::ref_ptr<osg::Image> renderTexture; //RGB image
   osg::ref_ptr<osg::Image> depthTexture; //Range image
 
-  VirtualCamera(osg::Group *uwsim_root, std::string name,std::string parentName, osg::Node *trackNode, int width, double fov, double range);
-  VirtualCamera(osg::Group *uwsim_root, std::string name,std::string parentName, osg::Node *trackNode, int width, int height, double fov,
+  VirtualCamera(osg::Group *uwsim_root, std::string name, std::string parentName, osg::Node *trackNode, int width, double fov, double range);
+  VirtualCamera(osg::Group *uwsim_root, std::string name, std::string parentName, osg::Node *trackNode, int width, int height, double fov,
                 double aspectRatio);
-  VirtualCamera(osg::Group *uwsim_root, std::string name,std::string parentName, osg::Node *trackNode, int width, int height, double baseline,
-                std::string frameId,double fov,SceneBuilder *oscene,float std, Parameters *params, int range, int bw);
+  VirtualCamera(osg::Group *uwsim_root, std::string name, std::string parentName, osg::Node *trackNode, int width, int height, double fov,
+                double aspectRatio, double range);
+  VirtualCamera(osg::Group *uwsim_root, std::string name, std::string parentName, osg::Node *trackNode, int width, int height, double baseline,
+                std::string frameId, double fov, SceneBuilder *oscene, float std, Parameters *params, int range, int bw);
   VirtualCamera();
 
-  void init(osg::Group *uwsim_root, std::string name,std::string parentName, osg::Node *trackNode, int width, int height, double baseline,
+  void init(osg::Group *uwsim_root, std::string name, std::string parentName, osg::Node *trackNode, int width, int height, double baseline,
             std::string frameId, Parameters *params, int range, double fov, double aspectRatio, double near, double far,
-            int bw, int widget,SceneBuilder *oscene, float std);
+            int bw, int widget, SceneBuilder *oscene, float std);
 
   //Creates the uniforms and loads the shader for the camera.
   void loadShaders(SceneBuilder *oscene);
