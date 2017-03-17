@@ -77,7 +77,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 				points->push_back(end);
 			}
 		osg::ref_ptr<osg::Vec4Array> color = new osg::Vec4Array;
-		color->push_back(osg::Vec4(0.0, 1.0, 0.0, 0.6));
+		color->push_back(osg::Vec4(1.0, 0.0, 0.0, 0.35)); // transparent red beams
 		beam->setVertexArray(points.get());
 		beam->setColorArray(color.get());
 		beam->setColorBinding(osg::Geometry::BIND_OVERALL);
