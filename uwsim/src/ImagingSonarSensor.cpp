@@ -72,7 +72,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 			for (double initAuxY = initAngleY; initAuxY <= finalAngleY; initAuxY += angleIncr)
 			{
 				osg::Vec3d start(0, 0, 0);
-				osg::Vec3d end(cos(initAuxX * M_PI / 180.0) * sin(initAuxY * M_PI / 180.0) * range, sin(initAuxX * M_PI / 180.0)*range, -cos(initAuxX * M_PI / 180.0)*cos(initAuxY * M_PI / 180.0)*range); // TODO
+				osg::Vec3d end(cos(initAuxX * M_PI / 180.0) * sin(initAuxY * M_PI / 180.0) * range, sin(initAuxX * M_PI / 180.0)*range, cos(initAuxX * M_PI / 180.0)*cos(initAuxY * M_PI / 180.0)*range); // TODO
 				points->push_back(start);
 				points->push_back(end);
 			}
