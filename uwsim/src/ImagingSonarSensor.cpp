@@ -63,7 +63,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 	// 	vcams[i].textureCamera->setCullMask(mask);
 	// }
 
-	// TODO visible beams in simulation
+	// visible beams in simulation
 	if (visible)
 	{
 		osg::ref_ptr<osg::Geometry> beam = osg::ref_ptr<osg::Geometry>(new osg::Geometry);
