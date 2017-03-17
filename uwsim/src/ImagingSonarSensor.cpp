@@ -1,11 +1,12 @@
 #include <pluginlib/class_list_macros.h>
 #include <uwsim/ImagingSonarSensor.h>
 
-ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Node *trackNode, osg::Group *uwsim_root) :
+ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Node *trackNode, osg::Group *uwsim_root, unsigned int mask) :
 	SimulatedDevice(cfg)
 {
 	this->name = cfg->name;
 	this->relativeTo = cfg->relativeTo;
+	this->visible = cfg->visible;
 	this->position[0] = cfg->position[0];
 	this->position[1] = cfg->position[1];
 	this->position[2] = cfg->position[2];
@@ -42,7 +43,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 			// find the rotation of the camera
 			osg::PositionAttitudeTransform * mTc = new osg::PositionAttitudeTransform;
 			mTc->setPosition(osg::Vec3d(0, 0, 0));
-			double angleX = (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0;
+			double angleX = M_PI / 2 - (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0; // TODO
 			double angleY = (initAngleY + camsFOVy / 2  + camsFOVy * j) * M_PI / 180.0;
 			mTc->setAttitude(osg::Quat(angleX, osg::Vec3d(1, 0, 0), angleY, osg::Vec3d(0, 1, 0), 0, osg::Vec3d(0, 0, 1)));
 
@@ -54,7 +55,6 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 		vcams.push_back(temp);
 	}
 
-	// TODO parentLinkName=parentName;
 	preCalcTable();
 
 	// TODO particle filter ?
@@ -64,28 +64,29 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 	// }
 
 	// TODO visible beams in simulation
-	// if (visible)
-	// {
-	// 	osg::ref_ptr<osg::Geometry> beam = osg::ref_ptr<osg::Geometry>(new osg::Geometry);
-	// 	osg::ref_ptr<osg::Vec3Array> points = new osg::Vec3Array;
-	// 	for (double initAux = initAngle; initAux <= finalAngle; initAux += angleIncr)
-	// 	{
-	// 		osg::Vec3d start(0, 0, 0);
-	// 		osg::Vec3d end(0, sin(initAux * 3.14 / 180.0)*range, -cos(initAux * 3.14 / 180.0)*range);
-	// 		points->push_back(start);
-	// 		points->push_back(end);
-	// 	}
-	// 	osg::ref_ptr<osg::Vec4Array> color = new osg::Vec4Array;
-	// 	color->push_back(osg::Vec4(0.0, 1.0, 0.0, 0.6));
-	// 	beam->setVertexArray(points.get());
-	// 	beam->setColorArray(color.get());
-	// 	beam->setColorBinding(osg::Geometry::BIND_OVERALL);
-	// 	beam->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, points->size()));
-	// 	geode = osg::ref_ptr<osg::Geode>(new osg::Geode());
-	// 	geode->addDrawable(beam.get());
-	// 	geode->setNodeMask(ARMask);
-	// }
-	// trackNode->asGroup()->addChild(geode);
+	if (visible)
+	{
+		osg::ref_ptr<osg::Geometry> beam = osg::ref_ptr<osg::Geometry>(new osg::Geometry);
+		osg::ref_ptr<osg::Vec3Array> points = new osg::Vec3Array;
+		for (double initAuxX = initAngleX; initAuxX <= finalAngleX; initAuxX += angleIncr)
+			for (double initAuxY = initAngleY; initAuxY <= finalAngleY; initAuxY += angleIncr)
+			{
+				osg::Vec3d start(0, 0, 0);
+				osg::Vec3d end(cos(initAuxX * M_PI / 180.0) * sin(initAuxY * M_PI / 180.0) * range, sin(initAuxX * M_PI / 180.0)*range, -cos(initAuxX * M_PI / 180.0)*cos(initAuxY * M_PI / 180.0)*range); // TODO
+				points->push_back(start);
+				points->push_back(end);
+			}
+		osg::ref_ptr<osg::Vec4Array> color = new osg::Vec4Array;
+		color->push_back(osg::Vec4(0.0, 1.0, 0.0, 0.6));
+		beam->setVertexArray(points.get());
+		beam->setColorArray(color.get());
+		beam->setColorBinding(osg::Geometry::BIND_OVERALL);
+		beam->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, points->size()));
+		geode = osg::ref_ptr<osg::Geode>(new osg::Geode());
+		geode->addDrawable(beam.get());
+		geode->setNodeMask(mask);
+	}
+	trackNode->asGroup()->addChild(geode);
 
 }
 
@@ -373,6 +374,8 @@ SimulatedDeviceConfig::Ptr ImagingSonarSensor_Factory::processConfig(const xmlpp
 			config->extractStringChar(child, cfg->relativeTo);
 		else if (child->get_name() == "position")
 			config->extractPositionOrColor(child, cfg->position);
+		else if (child->get_name() == "visible")
+			config->extractIntChar(child, cfg->visible);
 		else if (child->get_name() == "orientation")
 			config->extractOrientation(child, cfg->orientation);
 		else if (child->get_name() == "initAngleX")
@@ -425,7 +428,8 @@ bool ImagingSonarSensor_Factory::applyConfig(SimulatedIAUV * auv, Vehicle &vehic
 					            cfg->orientation[2], osg::Vec3d(0, 0, 1)));
 					auv->urdf->link[target]->getParent(0)->getParent(0)->asGroup()->addChild(vMd);
 
-					auv->devices->all.push_back(ImagingSonarSensor::Ptr(new ImagingSonarSensor(cfg, vMd, sceneBuilder->root)));
+					unsigned int mask = sceneBuilder->scene->getOceanScene()->getNormalSceneMask(); // TODO allow option in XML
+					auv->devices->all.push_back(ImagingSonarSensor::Ptr(new ImagingSonarSensor(cfg, vMd, sceneBuilder->root, mask)));
 				}
 			}
 			else

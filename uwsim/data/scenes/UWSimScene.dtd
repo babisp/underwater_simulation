@@ -197,5 +197,5 @@ echoROS?
 
 <!ELEMENT DredgeTool (name, target, offsetp, offsetr)>
 
-<!ELEMENT ImagingSonarSensor (name,relativeTo,position?,orientation?, initAngleX,finalAngleX,initAngleY,finalAngleY,angleIncr,range)>
+<!ELEMENT ImagingSonarSensor (name,relativeTo,visible?,position?,orientation?, initAngleX,finalAngleX,initAngleY,finalAngleY,angleIncr,range)>
 <!ELEMENT ImagingSonarSensorROS (name, topic, rate?)>

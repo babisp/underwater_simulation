@@ -21,6 +21,7 @@ public:
   //XML members
   std::string relativeTo;
   double position[3], orientation[3], initAngleX, finalAngleX, initAngleY, finalAngleY, angleIncr, range;
+  int visible;
   //constructor
   ImagingSonarSensor_Config(std::string type_) :
     SimulatedDeviceConfig(type_) {}
@@ -54,7 +55,7 @@ public:
   osg::Node *parent;
   std::vector<std::vector<VirtualCamera> > vcams; //Virtual Cameras
   std::string parentLinkName;
-  int numpixels, numpixelsX, numpixelsY, camPixelsX, camPixelsY, nCamsX, nCamsY;
+  int numpixels, numpixelsX, numpixelsY, camPixelsX, camPixelsY, nCamsX, nCamsY, visible;
   std::string relativeTo;
   double position[3], orientation[3], initAngleX, finalAngleX, initAngleY, finalAngleY, angleIncr, range, camsFOVx, camsFOVy;
   std::vector<std::vector<Remap2D> > remapVector; // make the remap vector 2D
@@ -62,7 +63,7 @@ public:
 
   osg::ref_ptr<osg::Geode> geode; //Geometry node that draws the beam
 
-  ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Node *trackNode, osg::Group *uwsim_root);
+  ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Node *trackNode, osg::Group *uwsim_root, unsigned int mask);
   void preCalcTable();
 };
 
