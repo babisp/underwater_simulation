@@ -51,6 +51,7 @@ class ImagingSonarSensor : public SimulatedDevice
   };
 
 public:
+  osg::Node *parent;
   std::vector<std::vector<VirtualCamera> > vcams; //Virtual Cameras
   std::string parentLinkName;
   int numpixels, numpixelsX, numpixelsY, camPixelsX, camPixelsY, nCamsX, nCamsY;
