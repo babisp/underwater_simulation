@@ -56,7 +56,7 @@ public:
   int numpixels, numpixelsX, numpixelsY, camPixelsX, camPixelsY, nCamsX, nCamsY;
   std::string relativeTo;
   double position[3], orientation[3], initAngleX, finalAngleX, initAngleY, finalAngleY, angleIncr, range, camsFOVx, camsFOVy;
-  std::vector< std::vector<Remap> > remapVector; // make the remap vector 2D
+  std::vector<std::vector<Remap2D> > remapVector; // make the remap vector 2D
   osg::Node *trackNode;
 
   osg::ref_ptr<osg::Geode> geode; //Geometry node that draws the beam

@@ -96,7 +96,7 @@ void ImagingSonarSensor::preCalcTable()
 
 	// initialize a numpixelsX * numpixelsY vector
 	// will be accessed by remapVector[x][y]
-	remapVector.resize(numpixelsX, std::vector<Remap>(numpixelsY,
+	remapVector.resize(numpixelsX, std::vector<Remap2D>(numpixelsY,
 	{
 		0, 0, 0, 0, // pixel1, pixel2, pixel3, pixel4
 		0.0, 0.0, 0.0, 0.0, // weight1, weight2, weight3, weight4
