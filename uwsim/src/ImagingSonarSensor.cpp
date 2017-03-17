@@ -37,7 +37,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 	for (int i = 0; i < nCamsX; i++)
 	{
 		std::vector<VirtualCamera> temp;
-		for (int j = 0; i < nCamsY; j++)
+		for (int j = 0; j < nCamsY; j++)
 		{
 			// find the rotation of the camera
 			osg::PositionAttitudeTransform * mTc = new osg::PositionAttitudeTransform;
