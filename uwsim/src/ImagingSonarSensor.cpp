@@ -472,14 +472,14 @@ void ImagingSonarSensor_ROSPublisher::publish()
 	sensor_msgs::MultiEchoLaserScan msg;
 
 	msg.header.stamp = getROSTime();
-	msg.header.frame_id = this->name;
+	msg.header.frame_id = dev->name;
 
-	msg.angle_min = initAngleX;
-	msg.angle_max = finalAngleX;
-	msg.angle_increment = angleIncr;
+	msg.angle_min = dev->initAngleX;
+	msg.angle_max = dev->finalAngleX;
+	msg.angle_increment = dev->angleIncr;
 
 	msg.range_min = 1.0;
-	msg.range_max = range;
+	msg.range_max = dev->range;
 
 	// TODO read distance values
 
