@@ -5,7 +5,7 @@
 #include <ros/ros.h>
 #include "ConfigXMLParser.h"
 #include "ROSInterface.h"
-#include <std_msgs/Int32.h>
+#include <sensor_msgs/MultiEchoLaserScan.h>
 #include "VirtualCamera.h"
 
 #include <osg/Node>

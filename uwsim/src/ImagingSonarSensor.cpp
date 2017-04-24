@@ -464,13 +464,25 @@ std::vector<boost::shared_ptr<ROSInterface> > ImagingSonarSensor_Factory::getInt
 void ImagingSonarSensor_ROSPublisher::createPublisher(ros::NodeHandle &nh)
 {
 	ROS_INFO("ImagingSonarSensor_ROSPublisher on topic %s", topic.c_str());
-	pub_ = nh.advertise < std_msgs::Int32 > (topic, 1);
+	pub_ = nh.advertise < sensor_msgs::MultiEchoLaserScan > (topic, 1);
 }
 
 void ImagingSonarSensor_ROSPublisher::publish()
 {
-	std_msgs::Int32 msg;
-	msg.data = 5;
+	sensor_msgs::MultiEchoLaserScan msg;
+
+	msg.header.stamp = getROSTime();
+	msg.header.frame_id = this->name;
+
+	msg.angle_min = initAngleX;
+	msg.angle_max = finalAngleX;
+	msg.angle_increment = angleIncr;
+
+	msg.range_min = 1.0;
+	msg.range_max = range;
+
+	// TODO read distance values
+
 	pub_.publish(msg);
 }
 
