@@ -43,6 +43,7 @@ public:
 class ImagingSonarSensor : public SimulatedDevice
 {
 
+public:
   // struct Remap
   struct Remap2D // use 4 pixels and bilinear interpolation instead
   {
@@ -51,7 +52,6 @@ class ImagingSonarSensor : public SimulatedDevice
     double distort;
   };
 
-public:
   osg::Node *parent;
   std::vector<std::vector<VirtualCamera> > vcams; //Virtual Cameras
   std::string parentLinkName;
