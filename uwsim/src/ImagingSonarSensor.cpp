@@ -512,7 +512,7 @@ void ImagingSonarSensor_ROSPublisher::publish()
 		for (int i = 0; i < dev->numpixelsX; i++)
 			for (int j = 0; j < dev->numpixelsY; j++)
 			{
-				ImagingSonarSensor::Remap2D remap = remapVector[i][j];
+				ImagingSonarSensor::Remap2D remap = dev->remapVector[i][j];
 				msg.ranges[i].echoes[j] = (tmp[remap.x1][remap.y1] * remap.weightX1Y1
 				                           + tmp[remap.x1][remap.y2] * remap.weightX1Y2
 				                           + tmp[remap.x2][remap.y1] * remap.weightX2Y1
