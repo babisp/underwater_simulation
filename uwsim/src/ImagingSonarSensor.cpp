@@ -469,21 +469,24 @@ void ImagingSonarSensor_ROSPublisher::createPublisher(ros::NodeHandle &nh)
 
 void ImagingSonarSensor_ROSPublisher::publish()
 {
-	sensor_msgs::MultiEchoLaserScan msg;
+	if (dev != NULL)
+	{
+		sensor_msgs::MultiEchoLaserScan msg;
 
-	msg.header.stamp = getROSTime();
-	msg.header.frame_id = dev->name;
+		msg.header.stamp = getROSTime();
+		msg.header.frame_id = dev->name;
 
-	msg.angle_min = dev->initAngleX * M_PI / 180;
-	msg.angle_max = dev->finalAngleX * M_PI / 180;
-	msg.angle_increment = dev->angleIncr * M_PI / 180;
+		msg.angle_min = dev->initAngleX * M_PI / 180;
+		msg.angle_max = dev->finalAngleX * M_PI / 180;
+		msg.angle_increment = dev->angleIncr * M_PI / 180;
 
-	msg.range_min = 1.0;
-	msg.range_max = dev->range;
+		msg.range_min = 1.0;
+		msg.range_max = dev->range;
 
-	// TODO read distance values
+		// TODO read distance values
 
-	pub_.publish(msg);
+		pub_.publish(msg);
+	}
 }
 
 #if ROS_VERSION_MINIMUM(1, 9, 0)
