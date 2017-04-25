@@ -483,7 +483,43 @@ void ImagingSonarSensor_ROSPublisher::publish()
 		msg.range_min = 1.0;
 		msg.range_max = dev->range;
 
-		// TODO read distance values
+		double fov, aspect, near, far;
+
+		std::vector<std::vector<double> > tmp;
+		std::vector<double> tmp1 = std::vector<double>(dev->camPixelsY * dev->nCamsY, 0.0);
+		tmp.resize(dev->camPixelsX * dev->nCamsX, tmp1);
+
+		for (unsigned int jX = 0; jX < dev->nCamsX ; jX++)
+			for (unsigned int jY = 0; jY < dev->nCamsY ; jY++)
+			{
+				dev->vcams[jX][jY].textureCamera->getProjectionMatrixAsPerspective(fov, aspect, near, far);
+
+				float * data = (float *)dev->vcams[jX][jY].depthTexture->data();
+				double a = far / (far - near);
+				double b = (far * near) / (near - far);
+
+				for (int i = 0; i < dev->camPixelsX; i++)
+					for (int j = 0; j < dev->camPixelsY; j++)
+					{
+						double Z = (data[i * dev->camPixelsX + j]); ///4294967296.0;
+						tmp[i + dev->camPixelsX * jX][j + dev->camPixelsY * jY] = b / (Z - a);
+					}
+			}
+
+		sensor_msgs::LaserEcho laserEchoMsg;
+		laserEchoMsg.echoes.resize(dev->numpixelsY, 0.0);
+		msg.ranges.resize(dev->numpixelsX, laserEchoMsg);
+		for (int i = 0; i < dev->numpixelsX; i++)
+			for (int j = 0; j < dev->numpixelsY; j++)
+			{
+				ImagingSonarSensor::Remap2D remap = remapVector[i][j];
+				msg.ranges[i].echoes[j] = (tmp[remap.x1][remap.y1] * remap.weightX1Y1
+				                           + tmp[remap.x1][remap.y2] * remap.weightX1Y2
+				                           + tmp[remap.x2][remap.y1] * remap.weightX2Y1
+				                           + tmp[remap.x2][remap.y2] * remap.weightX2Y2) * remap.distort;
+				if (msg.ranges[i].echoes[j] > dev->range)
+					msg.ranges[i].echoes[j] = dev->range;
+			}
 
 		pub_.publish(msg);
 	}
