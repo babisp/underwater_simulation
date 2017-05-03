@@ -43,7 +43,8 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 			// find the rotation of the camera
 			osg::PositionAttitudeTransform * mTc = new osg::PositionAttitudeTransform;
 			mTc->setPosition(osg::Vec3d(0, 0, 0));
-			double angleX = M_PI / 2 - (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0; // TODO
+			// double angleX = M_PI / 2 - (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0; // TODO
+			double angleX = (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0;
 			double angleY = (initAngleY + camsFOVy / 2  + camsFOVy * j) * M_PI / 180.0;
 			mTc->setAttitude(osg::Quat(angleX, osg::Vec3d(1, 0, 0), angleY, osg::Vec3d(0, 1, 0), 0, osg::Vec3d(0, 0, 1)));
 
@@ -72,7 +73,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 			for (double initAuxY = initAngleY; initAuxY <= finalAngleY; initAuxY += angleIncr)
 			{
 				osg::Vec3d start(0, 0, 0);
-				osg::Vec3d end(cos(initAuxX * M_PI / 180.0) * sin(initAuxY * M_PI / 180.0) * range, sin(initAuxX * M_PI / 180.0)*range, cos(initAuxX * M_PI / 180.0)*cos(initAuxY * M_PI / 180.0)*range); // TODO
+				osg::Vec3d end(cos(initAuxX * M_PI / 180.0) * sin(initAuxY * M_PI / 180.0) * range, sin(initAuxX * M_PI / 180.0)*range, -cos(initAuxX * M_PI / 180.0)*cos(initAuxY * M_PI / 180.0)*range); // TODO
 				points->push_back(start);
 				points->push_back(end);
 			}
