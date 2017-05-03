@@ -4,7 +4,7 @@
 <!-- elementos oceanScene -->
 <!ELEMENT oceanState (windx?,windy?,windSpeed?,depth?,reflectionDamping?,waveScale?,isNotChoppy?,choppyFactor?,crestFoamHeight?,oceanSurfaceHeight?,fog?,color?,attenuation?)>
 <!ELEMENT simParams (disableShaders?,resw?,resh?,offsetp?,offsetr?,enablePhysics?,gravity?,physicsFrequency?,physicsSubSteps?, physicsSolver?,showTrajectory*,lightRate?)>
-<!ELEMENT vehicle (name,file,jointValues?,position?,orientation?,scaleFactor?,virtualCamera*, structuredLightProjector*, rangeSensor*, objectPicker*, imu*, pressureSensor*, gpsSensor*, dvlSensor*, virtualRangeImage*,multibeamSensor*, imagingSonarSensor*, simulatedDevices?, echo*, ForceSensor*, DredgeTool*)>
+<!ELEMENT vehicle (name,file,jointValues?,position?,orientation?,scaleFactor?,virtualCamera*, structuredLightProjector*, rangeSensor*, objectPicker*, imu*, pressureSensor*, gpsSensor*, dvlSensor*, virtualRangeImage*,multibeamSensor*, simulatedDevices?, echo*, ForceSensor*, DredgeTool*, ImagingSonarSensor*)>
 <!ELEMENT virtualCamera (name,relativeTo,resw?,resh?,position?,orientation?,baseline?,frameId?,fovy?, parameters?, showpath?,grayscale?,std?)>
 <!ELEMENT virtualRangeImage (name,relativeTo,resw?,resh?,position?,orientation?,frameId?,fovy?,parameters?)>
 <!ELEMENT structuredLightProjector (name,relativeTo,fov,image_name,laser?,position?,orientation?)>
@@ -18,7 +18,7 @@
 <!ELEMENT imagingSonarSensor (name,relativeTo,position?,orientation?, initAngleX,finalAngleX,initAngleY,finalAngleY,angleIncr,range)>
 <!ELEMENT camera (freeMotion?,objectToTrack?,fov?,aspectRatio?,near?,far?,position?,lookAt?) >
 <!ELEMENT object (name,file,position,orientation,scaleFactor?,offsetp?,offsetr?,physics?)>
-<!ELEMENT rosInterfaces ((ROSOdomToPAT*)?, (PATToROSOdom*)?, (WorldToROSTF*)?, (ArmToROSJointState*)?, (ROSJointStateToArm*)?, (VirtualCameraToROSImage*)?, (ROSImageToHUD*)?,(ROSTwistToPAT*)?, (RangeSensorToROSRange*)?, (ROSPoseToPAT*)?, (ImuToROSImu*)?, (PressureSensorToROS*)?, (GPSSensorToROS*)?, (DVLSensorToROS*)?, (RangeImageSensorToROSImage*)?,(multibeamSensorToLaserScan*)?,(imagingSonarSensorToMultiEchoLaserScan*)?, (SimulatedDeviceROS*)?,(contactSensorToROS*)?,(echoROS*)?,(ForceSensorROS*)?,(ROSPointCloudLoader*)?,(RangeCameraToPCL*)?) >
+<!ELEMENT rosInterfaces ((ROSOdomToPAT*)?, (PATToROSOdom*)?, (WorldToROSTF*)?, (ArmToROSJointState*)?, (ROSJointStateToArm*)?, (VirtualCameraToROSImage*)?, (ROSImageToHUD*)?,(ROSTwistToPAT*)?, (RangeSensorToROSRange*)?, (ROSPoseToPAT*)?, (ImuToROSImu*)?, (PressureSensorToROS*)?, (GPSSensorToROS*)?, (DVLSensorToROS*)?, (RangeImageSensorToROSImage*)?,(multibeamSensorToLaserScan*)?, (SimulatedDeviceROS*)?,(contactSensorToROS*)?,(echoROS*)?,(ForceSensorROS*)?,(ImagingSonarSensorROS*)?,(ROSPointCloudLoader*)?,(RangeCameraToPCL*)?) >
 
 <!-- elementos comunes -->
 <!ELEMENT position (x,y,z)>
@@ -38,7 +38,6 @@
 <!ELEMENT p (#PCDATA)>
 <!ELEMENT std (#PCDATA)>
 <!ELEMENT target (#PCDATA)>
-
 
 <!-- elementos oceanState -->
 <!ELEMENT windx (#PCDATA)>
@@ -113,7 +112,7 @@
 <!ELEMENT angleIncr (#PCDATA)>
 
 <!--elementos imagingSonarSensor -->
-<!ATTLIST imagingSonarSensor underwaterParticles (true|false) #IMPLIED>
+<!ATTLIST ImagingSonarSensor underwaterParticles (true|false) #IMPLIED>
 <!ELEMENT initAngleX (#PCDATA)>
 <!ELEMENT finalAngleX (#PCDATA)>
 <!ELEMENT initAngleY (#PCDATA)>
@@ -200,3 +199,5 @@ echoROS?
 
 <!ELEMENT DredgeTool (name, target, offsetp, offsetr)>
 
+<!ELEMENT ImagingSonarSensor (name,relativeTo,visible?,position?,orientation?, initAngleX,finalAngleX,initAngleY,finalAngleY,angleIncr,range)>
+<!ELEMENT ImagingSonarSensorROS (name, topic, rate?)>
