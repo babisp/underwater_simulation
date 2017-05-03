@@ -107,58 +107,64 @@ void ImagingSonarSensor::preCalcTable()
 
 	int currentX;
 	int currentY;
-	int firstCurrentX, lastCurrentX;
 	double thetaX, thetaY;
 	double lastThetaX = 0;
 	double lastThetaY = 0;
 	double thetaCenterX, thetaCenterY;
-	osg::Vec3d first, lastX, lastY, lastXY, centerX, centerY, centerXY;
+	osg::Vec3d first, centerX, centerY, centerXY;
 	osg::Matrix *MVPW;
 
 	currentX = 0;
 	for (int i = 0; i < numpixelsX; i++)
 	{
 		iCamX = i / camPixelsX;
-		iCamY = 0;
 
-		firstCurrentX = currentX; // used for border later
-		currentY = 0;
-		for (int j = 0; j < numpixelsY; j++)
+		MVPW = new osg::Matrix(
+		  vcams[iCamX][0].textureCamera->getViewMatrix() * vcams[iCamX][0].textureCamera->getProjectionMatrix()
+		  * vcams[iCamX][0].textureCamera->getViewport()->computeWindowMatrix());
+		MVPW->invert(*MVPW);
+
+		//Get first last and center points from camera
+		first = osg::Vec3d(0, 0, 1) * (*MVPW) ;
+		centerX = osg::Vec3d(camPixelsX / 2, 0, 1) * (*MVPW);
+
+		osg::Vec3d pointX = osg::Vec3d(i % camPixelsX, 0, 1) * (*MVPW);
+		thetaX = acos(max( min( (first * pointX) / (first.length() * pointX.length()), 1.0), -1.0)) + camsFOVx * iCamX * M_PI / 180;
+
+		while (thetaX >= angleIncr * currentX * M_PI / 180 && currentX < numpixelsX) // repeat for all points within this area
 		{
-			if (j >= camPixelsY * iCamY) // get camera matrices
+			currentY = 0;
+			iCamY = 0;
+			for (int j = 0; j < numpixelsY; j++)
 			{
-				//Create matrix to unproject camera points to real world
-				MVPW = new osg::Matrix(
-				  vcams[iCamX][iCamY].textureCamera->getViewMatrix() * vcams[iCamX][iCamY].textureCamera->getProjectionMatrix()
-				  * vcams[iCamX][iCamY].textureCamera->getViewport()->computeWindowMatrix());
-				MVPW->invert(*MVPW);
+				if (j >= camPixelsY * iCamY) // get camera matrices
+				{
+					//Create matrix to unproject camera points to real world
+					MVPW = new osg::Matrix(
+					  vcams[iCamX][iCamY].textureCamera->getViewMatrix() * vcams[iCamX][iCamY].textureCamera->getProjectionMatrix()
+					  * vcams[iCamX][iCamY].textureCamera->getViewport()->computeWindowMatrix());
+					MVPW->invert(*MVPW);
 
-				//Get first last and center points from camera
-				first = osg::Vec3d(0, 0, 1) * (*MVPW) ;
-				lastX = osg::Vec3d(camPixelsX - 1, 0, 1) * (*MVPW);
-				lastY = osg::Vec3d(0, camPixelsY - 1, 1) * (*MVPW);
-				lastXY = osg::Vec3d(camPixelsX - 1, camPixelsY - 1, 1) * (*MVPW);
-				centerX = osg::Vec3d(camPixelsX / 2, 0, 1) * (*MVPW);
-				centerY = osg::Vec3d(0, camPixelsY / 2, 1) * (*MVPW);
-				centerXY = osg::Vec3d(camPixelsX / 2, camPixelsY / 2, 0) * (*MVPW);
-				thetaCenterX = acos((first * centerX) / (centerX.length() * first.length())) + camsFOVx * iCamX * M_PI / 180;
-				thetaCenterY = acos((first * centerY) / (centerY.length() * first.length())) + camsFOVy * iCamY * M_PI / 180;
-				iCamY++;
-			}
+					//Get first last and center points from camera
+					first = osg::Vec3d(0, 0, 1) * (*MVPW) ;
+					centerX = osg::Vec3d(camPixelsX / 2, 0, 1) * (*MVPW);
+					centerY = osg::Vec3d(0, camPixelsY / 2, 1) * (*MVPW);
+					centerXY = osg::Vec3d(camPixelsX / 2, camPixelsY / 2, 0) * (*MVPW);
 
-			//Interpolate points
-			osg::Vec3d pointX = osg::Vec3d(i % camPixelsX, 0, 1) * (*MVPW);
-			osg::Vec3d pointY = osg::Vec3d(0, j % camPixelsY, 1) * (*MVPW);
-			osg::Vec3d point = osg::Vec3d(i % camPixelsX, j % camPixelsY, 1) * (*MVPW);
+					thetaCenterX = acos((first * centerX) / (centerX.length() * first.length())) + camsFOVx * iCamX * M_PI / 180;
+					thetaCenterY = acos((first * centerY) / (centerY.length() * first.length())) + camsFOVy * iCamY * M_PI / 180;
+					iCamY++;
+				}
 
-			thetaX = acos(max( min( (first * pointX) / (first.length() * pointX.length()), 1.0), -1.0)) + camsFOVx * (iCamX - 1) * M_PI / 180;
-			thetaY = acos(max( min( (first * pointY) / (first.length() * pointY.length()), 1.0), -1.0)) + camsFOVy * (iCamY - 1) * M_PI / 180;
-			double cosThetaDistort = fabs( max( min( (centerXY * point) / (centerXY.length() * point.length()), 1.0), -1.0));
+				//Interpolate points
+				osg::Vec3d pointX = osg::Vec3d(i % camPixelsX, 0, 1) * (*MVPW);
+				osg::Vec3d pointY = osg::Vec3d(0, j % camPixelsY, 1) * (*MVPW);
+				osg::Vec3d point = osg::Vec3d(i % camPixelsX, j % camPixelsY, 1) * (*MVPW);
 
-			int initialCurrentY = currentY;
-			while (thetaX >= angleIncr * currentX * M_PI / 180 && currentX < numpixelsX) // repeat for all points within this area
-			{
-				currentY = initialCurrentY;
+				thetaX = acos(max( min( (first * pointX) / (first.length() * pointX.length()), 1.0), -1.0)) + camsFOVx * iCamX * M_PI / 180; // iCamX is already lower by 1
+				thetaY = acos(max( min( (first * pointY) / (first.length() * pointY.length()), 1.0), -1.0)) + camsFOVy * (iCamY - 1) * M_PI / 180;
+				double cosThetaDistort = fabs( max( min( (centerXY * point) / (centerXY.length() * point.length()), 1.0), -1.0));
+
 				while (thetaY >= angleIncr * currentY * M_PI / 180 && currentY < numpixelsY)
 				{
 					// set the remap values
@@ -230,100 +236,168 @@ void ImagingSonarSensor::preCalcTable()
 						}
 					}
 					remapVector[currentX][currentY].distort = 1 / cosThetaDistort;
-
 					currentY++;
 				}
-				currentX++;
-			}
+				lastThetaY = thetaY;
+			} // end for j
 
-			lastThetaX = thetaX;
-			lastThetaY = thetaY;
-		} // end for j
-
-		lastCurrentX = currentX; // already incremented by 1 in line 235
-
-		for (int tempX = firstCurrentX; tempX < lastCurrentX; tempX++)   // fix all bottom borders
-		{
-			osg::Vec3d pointX = osg::Vec3d(i % camPixelsX, 0, 1) * (*MVPW);
-			osg::Vec3d pointY = osg::Vec3d(0, (numpixelsY - 1) % camPixelsY, 1) * (*MVPW);
+			// fix right edge
 			osg::Vec3d point = osg::Vec3d(i % camPixelsX, (numpixelsY - 1) % camPixelsY, 1) * (*MVPW);
-
-			thetaX = acos(max( min( (first * pointX) / (first.length() * pointX.length()), 1.0), -1.0)) + camsFOVx * (iCamX - 1) * M_PI / 180;
-			thetaY = acos(max( min( (first * pointY) / (first.length() * pointY.length()), 1.0), -1.0)) + camsFOVy * (iCamY - 1) * M_PI / 180;
 			double cosThetaDistort = fabs( max( min( (centerXY * point) / (centerXY.length() * point.length()), 1.0), -1.0));
+			if (thetaX == angleIncr * currentX * M_PI / 180 or currentX == 0)
+			{
+				// single x
+				remapVector[currentX][(numpixelsY - 1)].x1 = i;
+				remapVector[currentX][(numpixelsY - 1)].x2 = i;
+				remapVector[currentX][(numpixelsY - 1)].y1 = (numpixelsY - 1);
+				remapVector[currentX][(numpixelsY - 1)].y2 = (numpixelsY - 1) - 1;
 
-			remapVector[tempX][numpixelsY - 1].x1 = i;
-			remapVector[tempX][numpixelsY - 1].x2 = i - 1;
-			remapVector[tempX][numpixelsY - 1].y1 = numpixelsY - 1;
-			remapVector[tempX][numpixelsY - 1].y2 = numpixelsY - 1;
+				double dist = fabs(thetaY - angleIncr * (numpixelsY - 1) * M_PI / 180 ), prevdist = fabs(lastThetaY - angleIncr * (numpixelsY - 1) * M_PI / 180 );
+				double total = prevdist + dist;
+				remapVector[currentX][(numpixelsY - 1)].weightX1Y1 = 0.5;
+				remapVector[currentX][(numpixelsY - 1)].weightX1Y2 = 0.5;
+				remapVector[currentX][(numpixelsY - 1)].weightX2Y1 = 0;
+				remapVector[currentX][(numpixelsY - 1)].weightX2Y2 = 0;
+			}
+			else
+			{
+				// two xs
+				remapVector[currentX][(numpixelsY - 1)].x1 = i;
+				remapVector[currentX][(numpixelsY - 1)].x2 = i - 1;
+				remapVector[currentX][(numpixelsY - 1)].y1 = (numpixelsY - 1);
+				remapVector[currentX][(numpixelsY - 1)].y2 = (numpixelsY - 1) - 1;
 
-			double dist = fabs(thetaX - angleIncr * tempX * M_PI / 180 ), prevdist = fabs(lastThetaX - angleIncr * tempX * M_PI / 180 );
-			double total = prevdist + dist;
-			remapVector[tempX][numpixelsY - 1].weightX1Y1 = prevdist / total;
-			remapVector[tempX][numpixelsY - 1].weightX1Y2 = 0;
-			remapVector[tempX][numpixelsY - 1].weightX2Y1 = dist / total;
-			remapVector[tempX][numpixelsY - 1].weightX2Y2 = 0;
+				double distX = fabs(thetaX - angleIncr * currentX * M_PI / 180 ),
+				       prevdistX = fabs(lastThetaX - angleIncr * currentX * M_PI / 180 ),
+				       distY = 0.5,
+				       prevdistY = 0.5;
+				double totalArea = (distX + prevdistX) * (distY + prevdistY);
+				remapVector[currentX][(numpixelsY - 1)].weightX1Y1 = (prevdistX * prevdistY) / totalArea;
+				remapVector[currentX][(numpixelsY - 1)].weightX1Y2 = (prevdistX * distY) / totalArea;
+				remapVector[currentX][(numpixelsY - 1)].weightX2Y1 = (distX * prevdistY) / totalArea;
+				remapVector[currentX][(numpixelsY - 1)].weightX2Y2 = (distX * distY) / totalArea;
+			}
+			remapVector[currentX][(numpixelsY - 1)].distort = 1 / cosThetaDistort;
 
-			remapVector[tempX][numpixelsY - 1].distort = 1 / cosThetaDistort;
+			currentX++;
 		}
-
+		lastThetaX = thetaX;
 	}
 
+	// fix bottom edge
+	currentY = 0;
+	int i = currentX = numpixelsX - 1;
+	iCamX = i / camPixelsX;
 	iCamY = 0;
-	for (int tempY = 0; tempY < numpixelsY; tempY++) // fix all side borders
+	for (int j = 0; j < numpixelsY; j++)
 	{
-		if (tempY >= camPixelsY * iCamY) // get camera matrices
+		if (j >= camPixelsY * iCamY) // get camera matrices
 		{
 			//Create matrix to unproject camera points to real world
 			MVPW = new osg::Matrix(
-			  vcams[nCamsX - 1][iCamY].textureCamera->getViewMatrix() * vcams[nCamsX - 1][iCamY].textureCamera->getProjectionMatrix()
-			  * vcams[nCamsX - 1][iCamY].textureCamera->getViewport()->computeWindowMatrix());
+			  vcams[iCamX][iCamY].textureCamera->getViewMatrix() * vcams[iCamX][iCamY].textureCamera->getProjectionMatrix()
+			  * vcams[iCamX][iCamY].textureCamera->getViewport()->computeWindowMatrix());
 			MVPW->invert(*MVPW);
 
 			//Get first last and center points from camera
 			first = osg::Vec3d(0, 0, 1) * (*MVPW) ;
-			lastX = osg::Vec3d(camPixelsX - 1, 0, 1) * (*MVPW);
-			lastY = osg::Vec3d(0, camPixelsY - 1, 1) * (*MVPW);
-			lastXY = osg::Vec3d(camPixelsX - 1, camPixelsY - 1, 1) * (*MVPW);
 			centerX = osg::Vec3d(camPixelsX / 2, 0, 1) * (*MVPW);
 			centerY = osg::Vec3d(0, camPixelsY / 2, 1) * (*MVPW);
 			centerXY = osg::Vec3d(camPixelsX / 2, camPixelsY / 2, 0) * (*MVPW);
-			thetaCenterX = acos((first * centerX) / (centerX.length() * first.length())) + camsFOVx * (nCamsX - 1) * M_PI / 180;
+
+			thetaCenterX = acos((first * centerX) / (centerX.length() * first.length())) + camsFOVx * iCamX * M_PI / 180;
 			thetaCenterY = acos((first * centerY) / (centerY.length() * first.length())) + camsFOVy * iCamY * M_PI / 180;
 			iCamY++;
 		}
 
-		osg::Vec3d pointX = osg::Vec3d((numpixelsX - 1) % camPixelsX, 0, 1) * (*MVPW);
-		osg::Vec3d pointY = osg::Vec3d(0, tempY % camPixelsY, 1) * (*MVPW);
-		osg::Vec3d point = osg::Vec3d((numpixelsX - 1) % camPixelsX, tempY % camPixelsY, 1) * (*MVPW);
+		//Interpolate points
+		osg::Vec3d pointX = osg::Vec3d(i % camPixelsX, 0, 1) * (*MVPW);
+		osg::Vec3d pointY = osg::Vec3d(0, j % camPixelsY, 1) * (*MVPW);
+		osg::Vec3d point = osg::Vec3d(i % camPixelsX, j % camPixelsY, 1) * (*MVPW);
 
-		thetaX = acos(max( min( (first * pointX) / (first.length() * pointX.length()), 1.0), -1.0)) + camsFOVx * (nCamsX - 2) * M_PI / 180;
+		thetaX = acos(max( min( (first * pointX) / (first.length() * pointX.length()), 1.0), -1.0)) + camsFOVx * iCamX * M_PI / 180; // iCamX is already lower by 1
 		thetaY = acos(max( min( (first * pointY) / (first.length() * pointY.length()), 1.0), -1.0)) + camsFOVy * (iCamY - 1) * M_PI / 180;
 		double cosThetaDistort = fabs( max( min( (centerXY * point) / (centerXY.length() * point.length()), 1.0), -1.0));
 
-		remapVector[numpixelsX - 1][tempY].x1 = numpixelsX - 1;
-		remapVector[numpixelsX - 1][tempY].x2 = numpixelsX - 1;
-		remapVector[numpixelsX - 1][tempY].y1 = tempY;
-		remapVector[numpixelsX - 1][tempY].y2 = tempY - 1;
+		while (thetaY >= angleIncr * currentY * M_PI / 180 && currentY < numpixelsY)
+		{
+			// set the remap values
+			if (thetaX == angleIncr * currentX * M_PI / 180 or currentX == 0)
+			{
+				if (thetaY == angleIncr * currentY * M_PI / 180 or currentY == 0)
+				{
+					// sinlge x, single y
+					remapVector[currentX][currentY].x1 = i;
+					remapVector[currentX][currentY].x2 = i;
+					remapVector[currentX][currentY].y1 = j;
+					remapVector[currentX][currentY].y2 = j;
 
-		double dist = fabs(thetaY - angleIncr * tempY * M_PI / 180 ), prevdist = fabs(lastThetaY - angleIncr * tempY * M_PI / 180 );
-		double total = prevdist + dist;
-		remapVector[numpixelsX - 1][tempY].weightX1Y1 = prevdist / total;
-		remapVector[numpixelsX - 1][tempY].weightX1Y2 = dist / total;
-		remapVector[numpixelsX - 1][tempY].weightX2Y1 = 0;
-		remapVector[numpixelsX - 1][tempY].weightX2Y2 = 0;
+					remapVector[currentX][currentY].weightX1Y1 = 1;
+					remapVector[currentX][currentY].weightX1Y2 = 0;
+					remapVector[currentX][currentY].weightX2Y1 = 0;
+					remapVector[currentX][currentY].weightX2Y2 = 0;
+				}
+				else
+				{
+					// sinlge x, two ys
+					remapVector[currentX][currentY].x1 = i;
+					remapVector[currentX][currentY].x2 = i;
+					remapVector[currentX][currentY].y1 = j;
+					remapVector[currentX][currentY].y2 = j - 1;
 
-		remapVector[numpixelsX - 1][tempY].distort = 1 / cosThetaDistort;
-	}
+					double dist = fabs(thetaY - angleIncr * currentY * M_PI / 180 ), prevdist = fabs(lastThetaY - angleIncr * currentY * M_PI / 180 );
+					double total = prevdist + dist;
+					remapVector[currentX][currentY].weightX1Y1 = prevdist / total;
+					remapVector[currentX][currentY].weightX1Y2 = dist / total;
+					remapVector[currentX][currentY].weightX2Y1 = 0;
+					remapVector[currentX][currentY].weightX2Y2 = 0;
+				}
+			}
+			else
+			{
+				if (thetaY == angleIncr * currentY * M_PI / 180 or currentY == 0)
+				{
+					// two xs, single y
+					remapVector[currentX][currentY].x1 = i;
+					remapVector[currentX][currentY].x2 = i - 1;
+					remapVector[currentX][currentY].y1 = j;
+					remapVector[currentX][currentY].y2 = j;
 
-	// bottom side corner
-	osg::Vec3d pointX = osg::Vec3d((numpixelsX - 1) % camPixelsX, 0, 1) * (*MVPW);
-	osg::Vec3d pointY = osg::Vec3d(0, (numpixelsY - 1) % camPixelsY, 1) * (*MVPW);
+					double dist = fabs(thetaX - angleIncr * currentX * M_PI / 180 ), prevdist = fabs(lastThetaX - angleIncr * currentX * M_PI / 180 );
+					double total = prevdist + dist;
+					remapVector[currentX][currentY].weightX1Y1 = prevdist / total;
+					remapVector[currentX][currentY].weightX1Y2 = 0;
+					remapVector[currentX][currentY].weightX2Y1 = dist / total;
+					remapVector[currentX][currentY].weightX2Y2 = 0;
+				}
+				else
+				{
+					// two xs, two ys
+					remapVector[currentX][currentY].x1 = i;
+					remapVector[currentX][currentY].x2 = i - 1;
+					remapVector[currentX][currentY].y1 = j;
+					remapVector[currentX][currentY].y2 = j - 1;
+
+					double distX = fabs(thetaX - angleIncr * currentX * M_PI / 180 ),
+					       prevdistX = fabs(lastThetaX - angleIncr * currentX * M_PI / 180 ),
+					       distY = fabs(lastThetaY - angleIncr * currentY * M_PI / 180 ),
+					       prevdistY = fabs(lastThetaY - angleIncr * currentY * M_PI / 180 );
+					double totalArea = (distX + prevdistX) * (distY + prevdistY);
+					remapVector[currentX][currentY].weightX1Y1 = (prevdistX * prevdistY) / totalArea;
+					remapVector[currentX][currentY].weightX1Y2 = (prevdistX * distY) / totalArea;
+					remapVector[currentX][currentY].weightX2Y1 = (distX * prevdistY) / totalArea;
+					remapVector[currentX][currentY].weightX2Y2 = (distX * distY) / totalArea;
+				}
+			}
+			remapVector[currentX][currentY].distort = 1 / cosThetaDistort;
+			currentY++;
+		}
+		lastThetaY = thetaY;
+	} // end for j
+
+	// bottom right corner
 	osg::Vec3d point = osg::Vec3d((numpixelsX - 1) % camPixelsX, (numpixelsY - 1) % camPixelsY, 1) * (*MVPW);
-
-	thetaX = acos(max( min( (first * pointX) / (first.length() * pointX.length()), 1.0), -1.0)) + camsFOVx * (nCamsX - 2) * M_PI / 180;
-	thetaY = acos(max( min( (first * pointY) / (first.length() * pointY.length()), 1.0), -1.0)) + camsFOVy * (nCamsY - 2) * M_PI / 180;
-	double cosThetaDistort = fabs( max( min( (centerXY * point) / (centerXY.length() * point.length()), 1.0), -1.0));
+	double cosThetaDistort = fabs(max( min( (centerXY * point) / (centerXY.length() * point.length()), 1.0), -1.0));
 
 	remapVector[numpixelsX - 1][numpixelsY - 1].x1 = numpixelsX - 1;
 	remapVector[numpixelsX - 1][numpixelsY - 1].x2 = numpixelsX - 1;
@@ -336,31 +410,6 @@ void ImagingSonarSensor::preCalcTable()
 	remapVector[numpixelsX - 1][numpixelsY - 1].weightX2Y2 = 0;
 
 	remapVector[numpixelsX - 1][numpixelsY - 1].distort = 1 / cosThetaDistort;
-
-	// for (int i = 0; i < nCamsX; i++)
-	// 	for (int j = 0; j < nCamsY; j++)
-	// 	{
-	// 		iCam = i * nCamsY + j; // find which camera to use
-
-	// 		// Create matrix to unproject camera points to real world
-	// 		MVPW = new osg::Matrix(
-	// 		  vcams[iCam].textureCamera->getViewMatrix() * vcams[iCam].textureCamera->getProjectionMatrix()
-	// 		  * vcams[iCam].textureCamera->getViewport()->computeWindowMatrix());
-	// 		MVPW->invert(*MVPW);
-
-	// 		// Get first last and center points from camera
-	// 		first = osg::Vec3d(0, 0, 1) * (*MVPW) ;
-	// 		last = osg::Vec3d(camPixelsX - 1, camPixelsY - 1, 1) * (*MVPW);
-	// 		center = osg::Vec3d(camPixelsX / 2, camPixelsY / 2, 1) * (*MVPW);
-	// 		thetacenter = acos((first * center) / (center.length() * first.length())) + camsFOV * iCam * M_PI / 180;
-
-	// 		// now find the margins of the pixels in the remap vector
-	// 		for (int ii = i * camPixelsX; ii < (i + 1) * camPixelsX; ii++)
-	// 			for (int jj = j * camPixelsY; jj < (j + 1) * camPixelsY; jj++)
-	// 			{
-	// 				//
-	// 			}
-	// 	}
 }
 
 SimulatedDeviceConfig::Ptr ImagingSonarSensor_Factory::processConfig(const xmlpp::Node* node, ConfigFile * config)
