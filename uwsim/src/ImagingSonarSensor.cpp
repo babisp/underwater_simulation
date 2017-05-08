@@ -479,7 +479,13 @@ bool ImagingSonarSensor_Factory::applyConfig(SimulatedIAUV * auv, Vehicle &vehic
 					auv->urdf->link[target]->getParent(0)->getParent(0)->asGroup()->addChild(vMd);
 
 					unsigned int mask = sceneBuilder->scene->getOceanScene()->getNormalSceneMask(); // TODO allow option in XML
-					auv->devices->all.push_back(ImagingSonarSensor::Ptr(new ImagingSonarSensor(cfg, vMd, sceneBuilder->root, mask)));
+					ImagingSonarSensor* tempSensor = new ImagingSonarSensor(cfg, vMd, sceneBuilder->root, mask);
+					auv->devices->all.push_back(ImagingSonarSensor::Ptr(tempSensor));
+
+					// add all the virtual cameras of the new sensor in the vehicle's camview vector so that they can be manipulated by the SceneBuilder
+					for (unsigned int i = 0; i < tempSensor->nCamsX; i++)
+						for (unsigned int j = 0; j < tempSensor->nCamsY; j++)
+							auv->camview.push_back(tempSensor->vcams[i][j]);
 				}
 			}
 			else
