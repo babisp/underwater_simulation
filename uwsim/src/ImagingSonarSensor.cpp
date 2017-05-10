@@ -62,11 +62,10 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 
 	preCalcTable();
 
-	// TODO particle filter ?
-	// for (int i = 0; i < nCams; i++)
-	// {
-	// 	vcams[i].textureCamera->setCullMask(mask);
-	// }
+	// particle filter
+	for (int i = 0; i < nCamsX; i++)
+		for (int j = 0; j < nCamsY; j++)
+			vcams[i][j].textureCamera->setCullMask(mask);
 
 	// visible beams in simulation
 	if (visible)
