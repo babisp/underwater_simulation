@@ -575,12 +575,13 @@ void ImagingSonarSensor_ROSPublisher::publish()
 		}
 
 		sensor_msgs::LaserEcho laserEchoMsg;
-		laserEchoMsg.echoes.resize(dev->numpixelsY, 0.0);
-		msg.ranges.resize(dev->numpixelsX, laserEchoMsg);
-		for (int i = 0; i < dev->numpixelsX; i++)
-			for (int j = 0; j < dev->numpixelsY; j++)
+		laserEchoMsg.echoes.resize(dev->numpixelsX, 0.0);
+		msg.ranges.resize(dev->numpixelsY, laserEchoMsg);
+		for (int i = 0; i < dev->numpixelsY; i++)
+		{
+			for (int j = 0; j < dev->numpixelsX; j++)
 			{
-				ImagingSonarSensor::Remap2D remap = dev->remapVector[i][j];
+				ImagingSonarSensor::Remap2D remap = dev->remapVector[j][i]; // the world axis are different from the image axis
 				msg.ranges[i].echoes[j] = (tmp[remap.x1][remap.y1] * remap.weightX1Y1
 				                           + tmp[remap.x1][remap.y2] * remap.weightX1Y2
 				                           + tmp[remap.x2][remap.y1] * remap.weightX2Y1
@@ -588,6 +589,7 @@ void ImagingSonarSensor_ROSPublisher::publish()
 				if (msg.ranges[i].echoes[j] > dev->range)
 					msg.ranges[i].echoes[j] = dev->range;
 			}
+		}
 
 		pub_.publish(msg);
 	}
