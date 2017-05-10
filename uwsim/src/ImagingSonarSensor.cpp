@@ -1,6 +1,10 @@
 #include <pluginlib/class_list_macros.h>
 #include <uwsim/ImagingSonarSensor.h>
 
+#define MAX_CAM_FOV 120.00000001
+// #define MAX_CAM_FOV 60.00000001
+// #define MAX_CAM_FOV 30.00000001
+
 ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Node *trackNode, osg::Group *uwsim_root, unsigned int mask) :
 	SimulatedDevice(cfg)
 {
@@ -28,8 +32,8 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 
 	//Decide number of cameras to use -> using a single camera when the fov is greater than 160 an eyefish distortion appears,...
 	// fov 180 doesn't work fov>180 is a completely mess. SO we use cameras until 120 fov and merge the result.
-	nCamsX = (int)(finalAngleX - initAngleX) / 120.00000001 + 1;
-	nCamsY = (int)(finalAngleY - initAngleY) / 120.00000001 + 1;
+	nCamsX = (int)(finalAngleX - initAngleX) / MAX_CAM_FOV + 1;
+	nCamsY = (int)(finalAngleY - initAngleY) / MAX_CAM_FOV + 1;
 	camsFOVx = (finalAngleX - initAngleX) / nCamsX;
 	camsFOVy = (finalAngleY - initAngleY) / nCamsY;
 	camPixelsX = camsFOVx / angleIncr + 1;
