@@ -48,8 +48,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 			// find the rotation of the camera
 			osg::PositionAttitudeTransform * mTc = new osg::PositionAttitudeTransform;
 			mTc->setPosition(osg::Vec3d(0, 0, 0));
-			// double angleX = M_PI / 2 - (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0; // TODO
-			double angleY = (initAngleY + camsFOVy / 2  + camsFOVy * j) * M_PI / 180.0;
+			double angleY = (initAngleY + camsFOVy / 2  + camsFOVy * (nCamsY - 1 - j)) * M_PI / 180.0; // TODO: for some strange reason the cameras must be created in the reverse order on this axis
 			mTc->setAttitude(osg::Quat(angleX, osg::Vec3d(1, 0, 0), angleY, osg::Vec3d(0, 1, 0), 0, osg::Vec3d(0, 0, 1)));
 
 			trackNode->asTransform()->addChild(mTc);
