@@ -103,7 +103,6 @@ src/PressureSensor.cpp
 src/DVLSensor.cpp
 src/GPSSensor.cpp
 src/MultibeamSensor.cpp
-src/ImagingSonarSensor.cpp
 src/VirtualSLSProjector.cpp
 src/BulletPhysics.cpp
 src/PhysicsBuilder.cpp
