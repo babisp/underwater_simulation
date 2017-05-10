@@ -53,7 +53,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 
 			trackNode->asTransform()->addChild(mTc);
 
-			temp.push_back(VirtualCamera(uwsim_root, name, relativeTo, mTc, camPixelsX, camPixelsY, camsFOVx, camPixelsX / camPixelsY, range));
+			temp.push_back(VirtualCamera(uwsim_root, name, relativeTo, mTc, camPixelsX, camPixelsY, camsFOVx, camPixelsX / (float) camPixelsY, range));
 
 		}
 		vcams.push_back(temp);
