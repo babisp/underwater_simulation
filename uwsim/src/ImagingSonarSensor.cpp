@@ -41,6 +41,7 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 
 	for (int i = 0; i < nCamsX; i++)
 	{
+		double angleX = (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0;
 		std::vector<VirtualCamera> temp;
 		for (int j = 0; j < nCamsY; j++)
 		{
@@ -48,7 +49,6 @@ ImagingSonarSensor::ImagingSonarSensor(ImagingSonarSensor_Config * cfg, osg::Nod
 			osg::PositionAttitudeTransform * mTc = new osg::PositionAttitudeTransform;
 			mTc->setPosition(osg::Vec3d(0, 0, 0));
 			// double angleX = M_PI / 2 - (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0; // TODO
-			double angleX = (initAngleX + camsFOVx / 2  + camsFOVx * i) * M_PI / 180.0;
 			double angleY = (initAngleY + camsFOVy / 2  + camsFOVy * j) * M_PI / 180.0;
 			mTc->setAttitude(osg::Quat(angleX, osg::Vec3d(1, 0, 0), angleY, osg::Vec3d(0, 1, 0), 0, osg::Vec3d(0, 0, 1)));
 
