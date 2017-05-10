@@ -549,22 +549,30 @@ void ImagingSonarSensor_ROSPublisher::publish()
 		std::vector<double> tmp1 = std::vector<double>(dev->camPixelsY * dev->nCamsY, 0.0);
 		tmp.resize(dev->camPixelsX * dev->nCamsX, tmp1);
 
+		int offsetX = 0;
 		for (unsigned int jX = 0; jX < dev->nCamsX ; jX++)
+		{
+			int offsetY = 0;
 			for (unsigned int jY = 0; jY < dev->nCamsY ; jY++)
 			{
 				dev->vcams[jX][jY].textureCamera->getProjectionMatrixAsPerspective(fov, aspect, near, far);
 
-				float * data = (float *)dev->vcams[jX][jY].depthTexture->data();
+				float * data = (float *) dev->vcams[jX][jY].depthTexture->data();
 				double a = far / (far - near);
 				double b = (far * near) / (near - far);
+
 
 				for (int i = 0; i < dev->camPixelsX; i++)
 					for (int j = 0; j < dev->camPixelsY; j++)
 					{
-						double Z = (data[i * dev->camPixelsX + j]); ///4294967296.0;
-						tmp[i + dev->camPixelsX * jX][j + dev->camPixelsY * jY] = b / (Z - a);
+						double Z = data[i * dev->camPixelsX + j];
+						tmp[i + offsetX][j + offsetY] = b / (Z - a);
 					}
+
+				offsetY += dev->camPixelsY;
 			}
+			offsetX += dev->camPixelsX;
+		}
 
 		sensor_msgs::LaserEcho laserEchoMsg;
 		laserEchoMsg.echoes.resize(dev->numpixelsY, 0.0);
