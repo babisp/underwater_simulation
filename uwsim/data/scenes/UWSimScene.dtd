@@ -15,7 +15,6 @@
 <!ELEMENT gpsSensor (name,relativeTo,position?,orientation?, std?)>
 <!ELEMENT dvlSensor (name,relativeTo,position?,orientation?, std?)>
 <!ELEMENT multibeamSensor (name,relativeTo,visible?,position?,orientation?, initAngle,finalAngle, angleIncr,range)>
-<!ELEMENT imagingSonarSensor (name,relativeTo,position?,orientation?, initAngleX,finalAngleX,initAngleY,finalAngleY,angleIncr,range)>
 <!ELEMENT camera (freeMotion?,objectToTrack?,fov?,aspectRatio?,near?,far?,position?,lookAt?) >
 <!ELEMENT object (name,file,position,orientation,scaleFactor?,offsetp?,offsetr?,physics?)>
 <!ELEMENT rosInterfaces ((ROSOdomToPAT*)?, (PATToROSOdom*)?, (WorldToROSTF*)?, (ArmToROSJointState*)?, (ROSJointStateToArm*)?, (VirtualCameraToROSImage*)?, (ROSImageToHUD*)?,(ROSTwistToPAT*)?, (RangeSensorToROSRange*)?, (ROSPoseToPAT*)?, (ImuToROSImu*)?, (PressureSensorToROS*)?, (GPSSensorToROS*)?, (DVLSensorToROS*)?, (RangeImageSensorToROSImage*)?,(multibeamSensorToLaserScan*)?, (SimulatedDeviceROS*)?,(contactSensorToROS*)?,(echoROS*)?,(ForceSensorROS*)?,(ImagingSonarSensorROS*)?,(ROSPointCloudLoader*)?,(RangeCameraToPCL*)?) >
@@ -142,7 +141,6 @@
 <!ELEMENT GPSSensorToROS (name, topic, rate?)>
 <!ELEMENT DVLSensorToROS (name, topic, rate?)>
 <!ELEMENT multibeamSensorToLaserScan (name, topic, rate?)>
-<!ELEMENT imagingSonarSensorToMultiEchoLaserScan (name, topic, rate?)>
 <!ELEMENT contactSensorToROS (name, topic, rate?)>
 <!ELEMENT ROSPointCloudLoader (topic)>
 <!ATTLIST ROSPointCloudLoader delLastPCD (true|false) #IMPLIED>
